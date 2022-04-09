@@ -4,16 +4,28 @@ endif
 
 
 CXX=clang++
-INCLUDES=-I$(VULKAN_SDK)/include
-CXXFLAGS=$(INCLUDES) -c -ggdb
+
+
+# header file include path
+INCLUDES=-isystem $(VULKAN_SDK)/Include
+# compiler flags
+CXXFLAGS=$(INCLUDES) -std=c++20 -c -g -O0
+#CXXFLAGS += -Wall -Wextra -Wpedantic
+CXXFLAGS += -Weverything
+
+# linker flags
+LDLIBS=-luser32
+LDFLAGS= $(LDLIBS) -g
 
 .SECONDARY:
 
 BUILDDIR=./build
 OBJDIR=$(BUILDDIR)/obj
 
+test.exe:
+
 %.exe: $(OBJDIR)/%.o
-	$(CXX) -o $@ $<
+	$(CXX) $(LDFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o: %.cxx $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -o $@ $<
@@ -24,4 +36,4 @@ $(OBJDIR):
 
 clean:
 	-pwsh -c rmdir -Recurse $(BUILDDIR)
-	-pwsh -c rm test.exe
+	-pwsh -c rm test.exe, test.ilk, test.pdb
