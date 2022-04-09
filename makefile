@@ -2,6 +2,8 @@ ifneq "$(OS)" "Windows_NT"
 $(error makefile only tested on Windows. be careful)
 endif
 
+.SECONDARY:
+.SUFFIXES:
 
 CXX=clang++
 
@@ -14,10 +16,9 @@ CXXFLAGS=$(INCLUDES) -std=c++20 -c -g -O0
 CXXFLAGS += -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic
 
 # linker flags
-LDLIBS=-luser32
-LDFLAGS= $(LDLIBS) -g
+LDLIBS=-luser32 -lvulkan-1
+LDFLAGS= -L$(VULKAN_SDK)/lib $(LDLIBS) -g
 
-.SECONDARY:
 
 BUILDDIR=./build
 OBJDIR=$(BUILDDIR)/obj
