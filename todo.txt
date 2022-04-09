@@ -1,6 +1,7 @@
 game window class:
 	switch to atom instead of string?
 	clean up properly
+	research linux message queue
 
 vulkan:
 	draw triangle

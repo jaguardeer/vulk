@@ -13,6 +13,7 @@
 
 #include <Windows.h>
 #include <iostream>
+#include <thread>
 using std::cout;
 using std::endl;
 
@@ -37,6 +38,9 @@ class GameWindow {
 	public:
 	auto CreateGameWindow();
 	auto GetHandle() {return _hwnd;}
+	auto isOpen();
+	auto ProcessMessages();
+
 	private:
 	auto RegisterWindowClass();
 	static constexpr auto WINDOW_CLASS_NAME = "elWindowClass";
@@ -70,7 +74,6 @@ auto GameWindow::RegisterWindowClass() {
 		.lpszClassName = this->WINDOW_CLASS_NAME,
 		.hIconSm = nullptr
 	};
-
 	auto class_atom = RegisterClassEx(&window_class);
 	if(class_atom == 0) PrintWindowsError("failed to register window class: ");
 }
@@ -96,16 +99,26 @@ auto GameWindow::CreateGameWindow() {
             hInstance,                              			// [in, optional] HINSTANCE hInstance,
             nullptr                                    			// [in, optional] LPVOID    lpParam
 			);
-
 	if(hwnd == nullptr) PrintWindowsError("failed to create game window: ");
-
 	this->_hwnd = hwnd;
+}
+
+auto GameWindow::isOpen() {
+	return IsWindowVisible(this->_hwnd);
+}
+
+auto GameWindow::ProcessMessages() {
+	MSG msg;
+	while(PeekMessage(&msg, this->_hwnd, 0, 0, PM_REMOVE)) DispatchMessage(&msg);
 }
 
 int main() {
 	cout << "running app..." << endl;
 	GameWindow gameWindow;
 	gameWindow.CreateGameWindow();
-	Sleep(5000);
+	while(gameWindow.isOpen()) {
+		gameWindow.ProcessMessages();
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
 	return 0;
 }
