@@ -16,9 +16,6 @@
 using std::cout;
 using std::endl;
 
-auto PrintWindowsError(const char* extra_message);
-auto CreateGameWindow();
-
 auto PrintWindowsError(const char* extra_message) {
 	const auto error_code = GetLastError();
 	LPTSTR error_msg;
@@ -36,12 +33,58 @@ auto PrintWindowsError(const char* extra_message) {
 	LocalFree(error_msg);
 }
 
-auto CreateGameWindow() {
-	constexpr auto WINDOW_CLASS_NAME = "elWindowClass";
+class GameWindow {
+	public:
+	auto CreateGameWindow();
+	auto GetHandle() {return _hwnd;}
+	private:
+	auto RegisterWindowClass();
+	static constexpr auto WINDOW_CLASS_NAME = "elWindowClass";
+	HWND _hwnd = nullptr;
+};
+
+LRESULT wndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+auto GameWindow::RegisterWindowClass() {
+	const auto hInstance = GetModuleHandle(nullptr); // todo - research this. "a handle to the instance that contains
+	{
+		WNDCLASSEX class_info;
+		if(GetClassInfoEx(hInstance, this->WINDOW_CLASS_NAME, &class_info) == true) {
+			cout << "window class is already registered" << endl;
+			return;
+		}
+	}
+	const WNDCLASSEX window_class = {            //        the window proc"
+		.cbSize = sizeof(window_class),
+		.style = 0,
+		.lpfnWndProc = wndProc,
+		.cbClsExtra = 0,
+		.cbWndExtra = 0,
+		.hInstance = hInstance,
+		.hIcon = nullptr, 
+		.hCursor = nullptr,// todo - load default icon
+		.hbrBackground = nullptr,
+		.lpszMenuName = nullptr,
+		.lpszClassName = this->WINDOW_CLASS_NAME,
+		.hIconSm = nullptr
+	};
+
+	auto class_atom = RegisterClassEx(&window_class);
+	if(class_atom == 0) PrintWindowsError("failed to register window class: ");
+}
+
+auto GameWindow::CreateGameWindow() {
+	if(this->_hwnd != nullptr) {
+		cout << "already created game window";
+		return;
+	}
+	RegisterWindowClass();
 	const auto hInstance = GetModuleHandle(nullptr); // todo - research this
 	auto hwnd = CreateWindowEx(
 			WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,           // [in]           DWORD     dwExStyle,
-			WINDOW_CLASS_NAME,                                  // [in, optional] LPCSTR    lpClassName,
+			this->WINDOW_CLASS_NAME,                            // [in, optional] LPCSTR    lpClassName,
 			"Test Window",                                      // [in, optional] LPCSTR    lpWindowName,
 			WS_CAPTION | WS_OVERLAPPEDWINDOW | WS_VISIBLE,      // [in]           DWORD     dwStyle,
             CW_USEDEFAULT,                          			// [in]           int       X,
@@ -54,13 +97,15 @@ auto CreateGameWindow() {
             nullptr                                    			// [in, optional] LPVOID    lpParam
 			);
 
-	if(hwnd == nullptr) {
-		PrintWindowsError("failed to create game window: ");
-	}
+	if(hwnd == nullptr) PrintWindowsError("failed to create game window: ");
+
+	this->_hwnd = hwnd;
 }
 
 int main() {
 	cout << "running app..." << endl;
-	CreateGameWindow();
+	GameWindow gameWindow;
+	gameWindow.CreateGameWindow();
+	Sleep(5000);
 	return 0;
 }

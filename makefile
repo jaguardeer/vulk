@@ -11,7 +11,7 @@ INCLUDES=-isystem $(VULKAN_SDK)/Include
 # compiler flags
 CXXFLAGS=$(INCLUDES) -std=c++20 -c -g -O0
 #CXXFLAGS += -Wall -Wextra -Wpedantic
-CXXFLAGS += -Weverything -Wno-c++98-compat
+CXXFLAGS += -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic
 
 # linker flags
 LDLIBS=-luser32
