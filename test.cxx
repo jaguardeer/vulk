@@ -121,6 +121,11 @@ auto GameWindow::ProcessMessages() {
  *		VULKAN SECTION
  */
 
+auto PrintVulkanResult(VkResult result, const char* extra_message = nullptr) {
+	if(extra_message != nullptr) cout << extra_message << endl;
+	cout << "(" << result << "): " << endl;
+}
+
 void CreateVulkanInstance() {
 	static constexpr VkApplicationInfo app_info = {
 		.sType               = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -139,6 +144,7 @@ void CreateVulkanInstance() {
 
 	VkInstance vk_instance;
 	VkResult result = vkCreateInstance(&instance_info, nullptr, &vk_instance);
+	if(result != VK_SUCCESS) PrintVulkanResult(result, "failed to create Vulkan instance");
 }
 
 int main() {
