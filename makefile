@@ -1,40 +1,35 @@
-ifneq "$(OS)" "Windows_NT"
-$(error makefile only tested on Windows. be careful)
-endif
+BUILDDIR=./build
 
-.SECONDARY:
-.SUFFIXES:
 
 CXX=clang++
 
+INCLUDES=-isystem $(VULKAN_SDK)/include
+CXXFLAGS=-fmodules -std=c++20 -stdlib=libc++
 
-# header file include path
-INCLUDES=-isystem $(VULKAN_SDK)/Include
-# compiler flags
-CXXFLAGS=$(INCLUDES) -std=c++20 -c -g -O0
-#CXXFLAGS += -Wall -Wextra -Wpedantic
-CXXFLAGS += -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic
+OBJFLAGS=$(INCLUDES) $(CXXFLAGS) -c
+PCMFLAGS=$(INCLUDES) $(CXXFLAGS) --precompile -x c++-module
 
-# linker flags
-LDLIBS=-luser32 -lvulkan-1
-LDFLAGS= -L$(VULKAN_SDK)/lib $(LDLIBS) -g
+.SECONDARY:
 
+$(BUILDDIR)/testVulkanResultString.exe:
 
-BUILDDIR=./build
-OBJDIR=$(BUILDDIR)/obj
+$(BUILDDIR):
+	mkdir $@
 
-test.exe:
+$(BUILDDIR)/%.pcm: %.ixx | $(BUILDDIR)
+	$(CXX) $(PCMFLAGS) $< -o $@
 
-%.exe: $(OBJDIR)/%.o
-	$(CXX) $(LDFLAGS) -o $@ $<
+$(BUILDDIR)/%.o: %.cxx $(BUILDDIR)/%.pcm | $(BUILDDIR)
+	$(CXX) $(OBJFLAGS) -fmodule-file=$(word 2,$^) $< -o $@
 
-$(OBJDIR)/%.o: %.cxx $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -o $@ $<
+$(BUILDDIR)/%.o: %.cxx $(BUILDDIR)/vulkanResultString.pcm | $(BUILDDIR)
+	$(CXX) $(OBJFLAGS) -fprebuilt-module-path=$(BUILDDIR) $< -o $@
 
-$(OBJDIR):
-	pwsh -c mkdir $@
+#vulkanResultString.o: vulkanResultString.cxx vulkanResultString.pcm
+#	$(CXX) $(CXXFLAGS) -fmodule-file=$(basename $@).pcm -c $< -o $@
+#
+#testVulkanResultString.o: testVulkanResultString.cxx vulkanResultString.pcm
+#	$(CXX) $(CXXFLAGS) -fprebuilt-module-path=. -c $< -o $@
 
-
-clean:
-	-pwsh -c rmdir -Recurse $(BUILDDIR)
-	-pwsh -c rm test.exe, test.ilk, test.pdb
+$(BUILDDIR)/testVulkanResultString.exe: $(BUILDDIR)/testVulkanResultString.o $(BUILDDIR)/vulkanResultString.o
+	$(CXX) $(CXXFLAGS) $^ -o $@
