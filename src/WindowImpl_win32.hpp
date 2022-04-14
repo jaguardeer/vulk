@@ -6,18 +6,25 @@
 #include <Windows.h>
 
 namespace EngineLibrary {
+
+	struct VulkanSurfaceInfo {
+		HWND hwnd = nullptr;
+	};
+
 	class WindowImpl {
 		public: // todo: friend class vs public?
 		//friend class EngineLibrary::Window;
 		// todo: return result instead of void
-		void InitWindow();
-		bool isOpen();
-		void ProcessMessages();
-		HWND hwnd = nullptr;
+		void initWindow();
+		bool isOpen() const;
+		void processMessages();
+		VulkanSurfaceInfo getSurfaceInfo();
 		private:
-		void RegisterWindowClass();
+		VulkanSurfaceInfo surfaceInfo;
+		void registerWindowClass();
 		static constexpr auto WINDOW_CLASS_NAME = "elWindowClass";
 		static LRESULT CALLBACK wndProc(HWND, UINT, WPARAM, LPARAM);
 	};
+
 }      // namespace EngineLibrary
 #endif // ENGINE_LIBRARY_WINDOW_IMPL

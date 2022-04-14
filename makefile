@@ -25,12 +25,13 @@ EXEFLAGS := $(CXXFLAGS) $(OSLIBS)
 .SECONDARY:
 .PHONY: clean
 
-testWindow.exe: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_linux.o testWindow.cpp
-	$(CXX) $(EXEFLAGS) $^ -o $@
-
+# TODO: do this in source?
 ifeq ($(OS),Windows_NT)
 testWindow.exe: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o testWindow.cpp
 	$(CXX) $(EXEFLAGS) $^ -o $@
+else
+testWindow.exe: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_linux.o testWindow.cpp
+		$(CXX) $(EXEFLAGS) $^ -o $@
 endif
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)

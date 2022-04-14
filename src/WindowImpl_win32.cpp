@@ -29,7 +29,7 @@ LRESULT CALLBACK WindowImpl::wndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-void WindowImpl::RegisterWindowClass() {
+void WindowImpl::registerWindowClass() {
 	 // todo: research GetModuleHandle()
 	const auto hInstance = GetModuleHandle(nullptr);
 	{
@@ -57,21 +57,21 @@ void WindowImpl::RegisterWindowClass() {
 	if(class_atom == 0) PrintWindowsError("failed to register window class: ");
 }
 
-bool WindowImpl::isOpen() {
-	return IsWindowVisible(this->hwnd);
+bool WindowImpl::isOpen() const {
+	return IsWindowVisible(this->surfaceInfo.hwnd);
 }
 
-void WindowImpl::ProcessMessages() {
+void WindowImpl::processMessages() {
 	MSG msg;
-	while(PeekMessage(&msg, this->hwnd, 0, 0, PM_REMOVE)) DispatchMessage(&msg);
+	while(PeekMessage(&msg, this->surfaceInfo.hwnd, 0, 0, PM_REMOVE)) DispatchMessage(&msg);
 }
 
-void WindowImpl::InitWindow() {
-	if(this->hwnd != nullptr) {
+void WindowImpl::initWindow() {
+	if(this->surfaceInfo.hwnd != nullptr) {
 		cout << "already created game window";
 		return;
 	}
-	this->RegisterWindowClass();
+	this->registerWindowClass();
 	const auto hInstance = GetModuleHandle(nullptr); // todo - research this
 	auto hwnd = CreateWindowEx(
 			WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,           // [in]           DWORD     dwExStyle,
@@ -88,5 +88,9 @@ void WindowImpl::InitWindow() {
             nullptr                                    			// [in, optional] LPVOID    lpParam
 			);
 	if(hwnd == nullptr) PrintWindowsError("failed to create game window: ");
-	this->hwnd = hwnd;
+	this->surfaceInfo.hwnd = hwnd;
+}
+
+VulkanSurfaceInfo WindowImpl::getSurfaceInfo() {
+	return surfaceInfo;
 }
