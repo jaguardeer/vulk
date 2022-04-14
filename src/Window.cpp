@@ -2,18 +2,18 @@
 
 using namespace EngineLibrary;
 
-void Window::InitWindow() {
-	_impl.InitWindow();
+void Window::initWindow() {
+	_impl.initWindow();
 }
 
-windowHandle Window::GetHandle() {
-	return _impl.hwnd;
-}
-
-bool Window::isOpen() {
+bool Window::isOpen() const {
 	return _impl.isOpen();
 }
 
-void Window::ProcessMessages() {
-	return _impl.ProcessMessages();
+void Window::processMessages() {
+	return _impl.processMessages();
+}
+
+VulkanSurfaceInfo Window::getSurfaceInfo() {
+	return _impl.getSurfaceInfo();
 }

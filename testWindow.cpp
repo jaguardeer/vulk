@@ -4,10 +4,10 @@ using namespace EngineLibrary;
 
 int main() {
 	Window w;
-	w.InitWindow();
+	w.initWindow();
 
 	while(w.isOpen()) {
-		w.ProcessMessages();
+		w.processMessages();
 	}
 
 	return 0;

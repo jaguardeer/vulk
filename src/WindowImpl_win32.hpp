@@ -1,5 +1,5 @@
-#ifndef ENGINE_LIBRARY_WINDOWSTRUCT
-#define ENGINE_LIBRARY_WINDOWSTRUCT
+#ifndef ENGINE_LIBRARY_WINDOW_IMPL
+#define ENGINE_LIBRARY_WINDOW_IMPL
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -20,4 +20,4 @@ namespace EngineLibrary {
 		static LRESULT CALLBACK wndProc(HWND, UINT, WPARAM, LPARAM);
 	};
 }      // namespace EngineLibrary
-#endif // ENGINE_LIBRARY_WINDOWSTRUCT
+#endif // ENGINE_LIBRARY_WINDOW_IMPL
