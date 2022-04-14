@@ -1,35 +1,38 @@
-BUILDDIR=./build
+# TODO: AUTO GENERATE HEADER DEPS
 
 
-CXX=clang++
+ifeq ($(OS),Windows_NT)
+SHELL := pwsh.exe
+.SHELLFLAGS := -NoProfile -Command
+OSLIBS := -luser32
+endif
 
-INCLUDES=-isystem $(VULKAN_SDK)/include
-CXXFLAGS=-fmodules -std=c++20 -stdlib=libc++
+BUILDDIR := ./build
+SRCDIR := ./src
+CXX := clang++
 
-OBJFLAGS=$(INCLUDES) $(CXXFLAGS) -c
-PCMFLAGS=$(INCLUDES) $(CXXFLAGS) --precompile -x c++-module
+INCLUDES := -isystem $(VULKAN_SDK)/include
+CXXFLAGS := -std=c++20 -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic
+
+OBJFLAGS := $(INCLUDES) $(CXXFLAGS) -c
+EXEFLAGS := $(CXXFLAGS) $(OSLIBS)
 
 .SECONDARY:
+.PHONY: clean
 
-$(BUILDDIR)/testVulkanResultString.exe:
+testWindow.exe: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o testWindow.cpp
+	$(CXX) $(EXEFLAGS) $^ -o $@
+
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)
+	$(CXX) $(OBJFLAGS) $< -o $@
+
+compile_flags.txt:
+	echo -std=c++20 > $@
+	echo -isystem >> $@
+	echo $(VULKAN_SDK)/include >> $@
 
 $(BUILDDIR):
 	mkdir $@
 
-$(BUILDDIR)/%.pcm: %.ixx | $(BUILDDIR)
-	$(CXX) $(PCMFLAGS) $< -o $@
-
-$(BUILDDIR)/%.o: %.cxx $(BUILDDIR)/%.pcm | $(BUILDDIR)
-	$(CXX) $(OBJFLAGS) -fmodule-file=$(word 2,$^) $< -o $@
-
-$(BUILDDIR)/%.o: %.cxx $(BUILDDIR)/vulkanResultString.pcm | $(BUILDDIR)
-	$(CXX) $(OBJFLAGS) -fprebuilt-module-path=$(BUILDDIR) $< -o $@
-
-#vulkanResultString.o: vulkanResultString.cxx vulkanResultString.pcm
-#	$(CXX) $(CXXFLAGS) -fmodule-file=$(basename $@).pcm -c $< -o $@
-#
-#testVulkanResultString.o: testVulkanResultString.cxx vulkanResultString.pcm
-#	$(CXX) $(CXXFLAGS) -fprebuilt-module-path=. -c $< -o $@
-
-$(BUILDDIR)/testVulkanResultString.exe: $(BUILDDIR)/testVulkanResultString.o $(BUILDDIR)/vulkanResultString.o
-	$(CXX) $(CXXFLAGS) $^ -o $@
+clean:
+	-rm -r $(BUILDDIR)

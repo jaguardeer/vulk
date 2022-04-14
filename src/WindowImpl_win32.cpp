@@ -1,10 +1,14 @@
+#include "WindowImpl_win32.hpp"
+
+#include <iostream>
 #include <Windows.h>
 
-/*
- *	WINDOWS SECTION
- */
+using namespace EngineLibrary;
+using std::cout;
+using std::endl;
 
-auto PrintWindowsError(const char* extra_message) {
+// todo: move to util?
+static auto PrintWindowsError(const char* extra_message) {
 	const auto error_code = GetLastError();
 	LPTSTR error_msg;
 	FormatMessage(
@@ -21,12 +25,13 @@ auto PrintWindowsError(const char* extra_message) {
 	LocalFree(error_msg);
 }
 
-LRESULT wndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WindowImpl::wndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-auto GameWindow::RegisterWindowClass() {
-	const auto hInstance = GetModuleHandle(nullptr); // todo - research this. "a handle to the instance that contains
+void WindowImpl::RegisterWindowClass() {
+	 // todo: research GetModuleHandle()
+	const auto hInstance = GetModuleHandle(nullptr);
 	{
 		WNDCLASSEX class_info;
 		if(GetClassInfoEx(hInstance, this->WINDOW_CLASS_NAME, &class_info) == true) {
@@ -52,12 +57,21 @@ auto GameWindow::RegisterWindowClass() {
 	if(class_atom == 0) PrintWindowsError("failed to register window class: ");
 }
 
-auto GameWindow::CreateGameWindow() {
-	if(this->_hwnd != nullptr) {
+bool WindowImpl::isOpen() {
+	return IsWindowVisible(this->hwnd);
+}
+
+void WindowImpl::ProcessMessages() {
+	MSG msg;
+	while(PeekMessage(&msg, this->hwnd, 0, 0, PM_REMOVE)) DispatchMessage(&msg);
+}
+
+void WindowImpl::InitWindow() {
+	if(this->hwnd != nullptr) {
 		cout << "already created game window";
 		return;
 	}
-	RegisterWindowClass();
+	this->RegisterWindowClass();
 	const auto hInstance = GetModuleHandle(nullptr); // todo - research this
 	auto hwnd = CreateWindowEx(
 			WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,           // [in]           DWORD     dwExStyle,
@@ -74,14 +88,5 @@ auto GameWindow::CreateGameWindow() {
             nullptr                                    			// [in, optional] LPVOID    lpParam
 			);
 	if(hwnd == nullptr) PrintWindowsError("failed to create game window: ");
-	this->_hwnd = hwnd;
-}
-
-auto GameWindow::isOpen() {
-	return IsWindowVisible(this->_hwnd);
-}
-
-auto GameWindow::ProcessMessages() {
-	MSG msg;
-	while(PeekMessage(&msg, this->_hwnd, 0, 0, PM_REMOVE)) DispatchMessage(&msg);
+	this->hwnd = hwnd;
 }
