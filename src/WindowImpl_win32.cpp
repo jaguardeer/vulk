@@ -1,11 +1,10 @@
-#include "WindowImpl_win32.hpp"
+#include <EngineLibrary/WindowImpl_win32.hpp>
 
 #include <iostream>
-#include <Windows.h>
-
-using namespace EngineLibrary;
 using std::cout;
 using std::endl;
+
+using namespace EngineLibrary;
 
 // todo: move to util?
 static auto PrintWindowsError(const char* extra_message) {
