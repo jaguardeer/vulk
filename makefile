@@ -9,39 +9,64 @@ else # TODO: probably shouldn't assume it's Linux if not Windows
 OSLIBS := -lxcb
 endif
 
-
-BUILDDIR := ./build
+# source directories
 SRCDIR := ./src
-CXX := clang++
+INCDIR := ./include
+# generated directories
+LIBDIR := ./lib
+BUILDDIR := ./build
 
-INCLUDES := -isystem $(VULKAN_SDK)/include -I"./include"
+# CXX
+CXX := clang++
+# CXX INCLUDES
+HINCFLAGS := -isystem $(VULKAN_SDK)/include -I$(INCDIR)
+LINCFLAGS := $(OSLIBS) -L$(LIBDIR) -llibel
+# CXX GENERIC FLAGS
 CXXFLAGS := -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic -Wno-padded
 CXXFLAGS += -std=c++20
 CXXFLAGS += -g
+# CXX FILETYPE FLAGS
+OBJFLAGS := -c $(CXXFLAGS) $(HINCFLAGS)
+EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(HINCFLAGS) $(LINCFLAGS)
 
-OBJFLAGS := -c $(CXXFLAGS) $(INCLUDES)
-EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(INCLUDES)
+# AR
+AR := llvm-ar
+ARFLAGS := rc
 
 .SECONDARY:
 .PHONY: clean
 
+$(LIBDIR)/libel.a: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o
+$(LIBDIR)/libel.lib: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o
+
 # TODO: do this in source?
 ifeq ($(OS),Windows_NT)
-testWindow.exe: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o test/testWindow.cpp
+testWindow.exe: tests/testWindow.cpp $(LIBDIR)/libel.lib
 	$(CXX) $(EXEFLAGS) $^ -o $@
 else
-testWindow.exe: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_linux.o test/testWindow.cpp
+testWindow.exe: tests/testWindow.cpp $(LIBDIR)/libel.lib
 		$(CXX) $(EXEFLAGS) $^ -o $@
 endif
+
+%.exe: lib/libel.a
+
+$(LIBDIR)/%.a $(LIBDIR)/%.lib: | $(LIBDIR)
+	$(AR) $(ARFLAGS) $@ $^
+
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)
 	$(CXX) $(OBJFLAGS) $< -o $@
 
+
+# compile_flags.txt is used by clangd
+# generate compile_flags.txt with the same args used to compile .o files
 compile_flags.txt: makefile
 	echo $(subst " ","\n",$(OBJFLAGS)) > $@
 
-$(BUILDDIR):
+# generated directories
+$(BUILDDIR) $(LIBDIR):
 	mkdir $@
 
 clean:
 	-rm -r $(BUILDDIR)
+	-rm -r $(LIBDIR)
