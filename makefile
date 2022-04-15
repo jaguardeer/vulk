@@ -1,12 +1,13 @@
-# TODO: AUTO GENERATE HEADER DEPS
 
-
+# os specific variables
 ifeq ($(OS),Windows_NT)
+OSLIBS := -luser32 -llibel
+ENGINELIB = $(LIBDIR)/libel.lib
 SHELL := pwsh.exe
 .SHELLFLAGS := -NoProfile -Command
-OSLIBS := -luser32
 else # TODO: probably shouldn't assume it's Linux if not Windows
-OSLIBS := -lxcb
+OSLIBS := -lxcb -lel
+ENGINELIB = $(LIBDIR)/libel.a
 endif
 
 # source directories
@@ -19,15 +20,15 @@ BUILDDIR := ./build
 # CXX
 CXX := clang++
 # CXX INCLUDES
-HINCFLAGS := -isystem $(VULKAN_SDK)/include -I$(INCDIR)
-LINCFLAGS := $(OSLIBS) -L$(LIBDIR) -llibel
+INCFLAGS := -isystem $(VULKAN_SDK)/include -I$(INCDIR)
+LIBFLAGS := $(OSLIBS) -L$(LIBDIR)
 # CXX GENERIC FLAGS
 CXXFLAGS := -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic -Wno-padded
 CXXFLAGS += -std=c++20
 CXXFLAGS += -g
 # CXX FILETYPE FLAGS
-OBJFLAGS := -c $(CXXFLAGS) $(HINCFLAGS)
-EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(HINCFLAGS) $(LINCFLAGS)
+OBJFLAGS := -c $(CXXFLAGS) $(INCFLAGS)
+EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(INCFLAGS) $(LIBFLAGS)
 
 # AR
 AR := llvm-ar
@@ -36,32 +37,32 @@ ARFLAGS := rc
 .SECONDARY:
 .PHONY: clean
 
-$(LIBDIR)/libel.a: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o
-$(LIBDIR)/libel.lib: $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o
+# specific targets
+# TODO: AUTO GENERATE OBJECT DEPS
+$(ENGINELIB): $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_linux.o
 
-# TODO: do this in source?
-ifeq ($(OS),Windows_NT)
-testWindow.exe: tests/testWindow.cpp $(LIBDIR)/libel.lib
-	$(CXX) $(EXEFLAGS) $^ -o $@
-else
-testWindow.exe: tests/testWindow.cpp $(LIBDIR)/libel.lib
-		$(CXX) $(EXEFLAGS) $^ -o $@
-endif
+testWindow.exe: tests/testWindow.cpp $(ENGINELIB)
+		$(CXX) $< $(EXEFLAGS) -o $@
 
-%.exe: lib/libel.a
-
-$(LIBDIR)/%.a $(LIBDIR)/%.lib: | $(LIBDIR)
-	$(AR) $(ARFLAGS) $@ $^
-
-
+# objects
+# TODO: AUTO GENERATE HEADER DEPS
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)
 	$(CXX) $(OBJFLAGS) $< -o $@
+
+# libraries
+$(ENGINELIB): | $(LIBDIR)
+	$(AR) $(ARFLAGS) $@ $^
+
+# executables?
 
 
 # compile_flags.txt is used by clangd
 # generate compile_flags.txt with the same args used to compile .o files
 compile_flags.txt: makefile
-	echo $(subst " ","\n",$(OBJFLAGS)) > $@
+	#echo $(subst " ","NEWLINE",$(OBJFLAGS)) > $@
+	rm $@
+	$(foreach X,$(OBJFLAGS),echo $(X) >> $@;)
+
 
 # generated directories
 $(BUILDDIR) $(LIBDIR):
