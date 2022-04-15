@@ -6,6 +6,7 @@ bin/
 
 
 # other stuff
+*.out
 *.exe
 *.pdb
 *.ilk
