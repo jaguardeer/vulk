@@ -1,7 +1,11 @@
+# generated files and dirs
 compile_flags.txt
 build/
 lib/
+bin/
 
+
+# other stuff
 *.exe
 *.pdb
 *.ilk

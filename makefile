@@ -14,6 +14,7 @@ endif
 SRCDIR := ./src
 INCDIR := ./include
 # generated directories
+BINDIR := ./bin
 LIBDIR := ./lib
 BUILDDIR := ./build
 
@@ -34,15 +35,13 @@ EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(INCFLAGS) $(LIBFLAGS)
 AR := llvm-ar
 ARFLAGS := rc
 
+# special targets
 .SECONDARY:
 .PHONY: clean
 
 # specific targets
-# TODO: AUTO GENERATE OBJECT DEPS
-$(ENGINELIB): $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_linux.o
-
-testWindow.exe: tests/testWindow.cpp $(ENGINELIB)
-		$(CXX) $< $(EXEFLAGS) -o $@
+# TODO: AUTO GENERATE OBJECT DEPS (may depend on OS)
+$(ENGINELIB): $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o
 
 # objects
 # TODO: AUTO GENERATE HEADER DEPS
@@ -53,7 +52,9 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)
 $(ENGINELIB): | $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $^
 
-# executables?
+# executables
+$(BINDIR)/test%.exe: tests/test%.cpp $(ENGINELIB) | $(BINDIR)
+		$(CXX) $< $(EXEFLAGS) -o $@
 
 
 # compile_flags.txt is used by clangd
@@ -65,7 +66,7 @@ compile_flags.txt: makefile
 
 
 # generated directories
-$(BUILDDIR) $(LIBDIR):
+$(BUILDDIR) $(LIBDIR) $(BINDIR):
 	mkdir $@
 
 clean:
