@@ -32,11 +32,10 @@ CPPFILES := $(call recurse_exclude,$(SRCDIR)/,*.cpp,$(SRC_EXCLUDE))
 OBJFILES := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(CPPFILES))
 OBJFILES := $(OBJFILES:.cpp=.o)
 
-test:
-	@echo CPPFILES = $(CPPFILES)
-	@echo OBJFILES = $(OBJFILES)
+# specific targets
+$(ENGINELIB): $(OBJFILES)
 
-
+# generic targets
 # CXX
 CXX := clang++
 # CXX INCLUDES
@@ -59,16 +58,13 @@ ARFLAGS := rc
 .SECONDARY:
 .PHONY: clean
 
-# specific targets
-# TODO: AUTO GENERATE OBJECT DEPS (may depend on OS)
-$(ENGINELIB): $(BUILDDIR)/Window.o $(BUILDDIR)/linux/WindowImpl.o
-
 # objects
 # TODO: AUTO GENERATE HEADER DEPS
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)/
 	$(CXX) $(OBJFLAGS) $< -o $@
 
-$(OBJECTS): $(OBJDIRS)
+# TODO: MAKE THIS WORK
+$(BUILDDIR)/%.o: $(dir $@)
 
 # libraries
 $(ENGINELIB): $(OBJECTS) | $(LIBDIR)/
