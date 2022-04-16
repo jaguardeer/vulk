@@ -86,10 +86,15 @@ $(ENGINELIB): $(OBJECTS) | $(LIBDIR)/
 	$(AR) $(ARFLAGS) $@ $?
 
 # executables
-$(BINDIR)/test.exe: tests/test.cpp $(ENGINELIB) | $(BINDIR)/
+$(BINDIR)/test.exe: $(TESTDIR)/test.cpp $(ENGINELIB) | $(BINDIR)/
 	$(CXX) $< $(EXEFLAGS) -o $@
 
-$(BINDIR)/test%.exe: tests/test%.cpp $(ENGINELIB) | $(BINDIR)/
+$(BINDIR)/test%.exe: $(TESTDIR)/test%.cpp $(ENGINELIB) | $(BINDIR)/
+	$(CXX) $< $(EXEFLAGS) -o $@
+
+# TODO: move %.exe target sources into a different dir
+# TODO: move %.exe target sources into a different dir
+$(BINDIR)/%.exe: $(TESTDIR)/%.cpp $(ENGINELIB) | $(BINDIR)/
 	$(CXX) $< $(EXEFLAGS) -o $@
 
 
