@@ -1,3 +1,4 @@
+.DEFAULT_GOAL := tests
 # project directories
 # source directories
 SRCDIR    := ./src
@@ -53,6 +54,10 @@ $(RESULTDIR)/%.txt: bin/%.exe | $(RESULTDIR)/
 	./$< | tee $@
 
 
+# special targets
+.SUFFIXES:
+.SECONDARY:
+
 # generic targets
 # CXX
 CXX := clang++
@@ -70,11 +75,6 @@ EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(INCFLAGS) $(LIBFLAGS)
 # AR
 AR := llvm-ar
 ARFLAGS := rc
-
-# special targets
-.SUFFIXES:
-.SECONDARY:
-.PHONY: clean
 
 # objects
 # TODO: AUTO GENERATE HEADER DEPS
@@ -113,5 +113,6 @@ $(BUILDDIR)/%: | $(BUILDDIR)
 %/:
 	mkdir -p $@
 
+.PHONY: clean
 clean:
 	-$(foreach dir,$(GENERATED_DIRS),rm -r $(dir) ; )
