@@ -4,7 +4,7 @@
 using std::cout;
 using std::endl;
 
-using namespace EngineLibrary;
+using namespace engineLibrary;
 
 // todo: move to util?
 static auto PrintWindowsError(const char* extra_message) {

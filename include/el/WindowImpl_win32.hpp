@@ -5,7 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-namespace EngineLibrary {
+namespace engineLibrary {
 
 	struct VulkanSurfaceInfo {
 		HWND hwnd = nullptr;
@@ -13,7 +13,7 @@ namespace EngineLibrary {
 
 	class WindowImpl {
 		public: // todo: friend class vs public?
-		//friend class EngineLibrary::Window;
+		//friend class engineLibrary::Window;
 		// todo: return result instead of void
 		void initWindow();
 		bool isOpen() const;

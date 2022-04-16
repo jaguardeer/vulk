@@ -3,7 +3,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace EngineLibrary {
+namespace engineLibrary {
 	constexpr const char* GetVkResultString(const VkResult vulkan_result) {
 		switch(vulkan_result) {
 			case VK_SUCCESS:
@@ -105,5 +105,5 @@ namespace EngineLibrary {
 //				return "!!! NOT A VkResult !!!";
 		}
 	}
-}      // namespace EngineLibrary
+}      // namespace engineLibrary
 #endif // ENGINE_LIBRARY_VKRESULTSTRING

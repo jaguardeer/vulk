@@ -1,15 +1,19 @@
 #include <vulkan/vulkan.h>
 #include <iostream>
 #include <thread>
+
+// engineLibrary headers
 #include <el/Window.hpp>
+#include <el/VkResultString.hpp>
+
 using std::cout;
 using std::endl;
 
-using namespace EngineLibrary;
+using namespace engineLibrary;
 
 auto PrintVulkanResult(VkResult result, const char* extra_message = nullptr) {
 	if(extra_message != nullptr) cout << extra_message << endl;
-	cout << "(" << result << "): " << endl;
+	cout << "(" << result << "): " << GetVkResultString(result) << endl;
 }
 
 void CreateVulkanInstance() {
@@ -19,7 +23,7 @@ void CreateVulkanInstance() {
 		.applicationVersion  = VK_MAKE_VERSION(0, 0, 1),
 		.pEngineName         = "test engine",
 		.engineVersion       = VK_MAKE_VERSION(0, 0, 1),
-		.apiVersion          = VK_API_VERSION_1_0
+		.apiVersion          = VK_API_VERSION_1_0,
 	};
 
 	// TODO: layers & extensions
@@ -36,9 +40,11 @@ void CreateVulkanInstance() {
 int main() {
 	cout << "running app..." << endl;
 
-	cout << "init..." << endl;
+	cout << "making main window..." << endl;
 	Window gameWindow;
 	gameWindow.initWindow();
+
+	cout << "creating vulkan instance..." << endl;
 	CreateVulkanInstance();
 
 	cout << "main loop..." << endl;
@@ -47,5 +53,6 @@ int main() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
+	cout << "done!" << endl;
 	return 0;
 }

@@ -5,7 +5,7 @@
 // using std::cout;
 // using std::endl;
 
-using namespace EngineLibrary;
+using namespace engineLibrary;
 
 // TODO: i don't know what's going on here
 void WindowImpl::initWindow() {

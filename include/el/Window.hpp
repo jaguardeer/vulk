@@ -8,7 +8,7 @@
 #include "WindowImpl_linux.hpp"
 #endif // #ifdef linux
 
-namespace EngineLibrary{
+namespace engineLibrary{
 	class Window {
 		// todo: return result instead of void
 		public:
@@ -17,7 +17,7 @@ namespace EngineLibrary{
 			void processMessages(); // todo: move this elsewhere?
 			VulkanSurfaceInfo getSurfaceInfo(); // returns info needed to build the appropriate Vk**SurfaceCreateInfo struct
 		private:
-			EngineLibrary::WindowImpl _impl;
+			engineLibrary::WindowImpl _impl;
 	};
-}      // namespace EngineLibrary
+}      // namespace engineLibrary
 #endif // ENGINE_LIBRARY_WINDOW

@@ -1,7 +1,7 @@
 #include <el/Window.hpp>
 #include <iostream>
 using namespace std;
-using namespace EngineLibrary;
+using namespace engineLibrary;
 
 int main() {
 	Window w;

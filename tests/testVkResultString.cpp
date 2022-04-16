@@ -4,7 +4,7 @@
 #include <el/VkResultString.hpp>
 
 using namespace std;
-using namespace EngineLibrary;
+using namespace engineLibrary;
 
 int main() {
 	std::cout << VK_SUCCESS << std::endl;

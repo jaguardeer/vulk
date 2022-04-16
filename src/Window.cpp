@@ -1,6 +1,6 @@
 #include <el/Window.hpp>
 
-using namespace EngineLibrary;
+using namespace engineLibrary;
 
 void Window::initWindow() {
 	_impl.initWindow();

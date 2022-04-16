@@ -3,7 +3,7 @@
 
 #include <xcb/xcb.h>
 
-namespace EngineLibrary {
+namespace engineLibrary {
 
 	struct VulkanSurfaceInfo {
 		xcb_connection_t* connection = nullptr;
@@ -12,7 +12,7 @@ namespace EngineLibrary {
 
 	class WindowImpl {
 		public: // todo: friend class vs public?
-			//friend class EngineLibrary::Window;
+			//friend class engineLibrary::Window;
 			// todo: return result instead of void
 			void initWindow();
 			bool isOpen() const;
@@ -22,5 +22,5 @@ namespace EngineLibrary {
 			VulkanSurfaceInfo _surfaceInfo;
 	};
 
-}      // namespace EngineLibrary
+}      // namespace engineLibrary
 #endif // ENGINE_LIBRARY_WINDOW_IMPL
