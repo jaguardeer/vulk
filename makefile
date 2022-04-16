@@ -2,10 +2,13 @@
 # source directories
 SRCDIR    := ./src
 INCDIR    := ./include
+TESTDIR   := ./tests
 # generated directories
 BINDIR    := ./bin
 LIBDIR    := ./lib
 BUILDDIR  := ./build
+RESULTDIR := ./results
+GENERATED_DIRS := $(BINDIR) $(LIBDIR) $(BUILDDIR) $(RESULTDIR)
 
 # os specific variables
 # win32
@@ -31,17 +34,23 @@ recurse_exclude = $(wildcard $1$2) $(foreach d,$(filter-out $1$3,$(wildcard $1*)
 # CPPFILES = all **/*.cpp files in $(SRCDIR) that aren't named $(SRC_EXCLUDE)
 CPPFILES := $(call recurse_exclude,$(SRCDIR)/,*.cpp,$(SRC_EXCLUDE))
 # OBJFILES = same as CPPFILES, but is .o and in ./build/*
-OBJFILES := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(CPPFILES))
-OBJFILES := $(OBJFILES:.cpp=.o)
-OBJDIRS  := $(dir $(OBJFILES))
-
+OBJFILES := $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(CPPFILES))
 
 # specific targets
 # main library (libel.lib)
 $(ENGINELIB): $(OBJFILES)
-# build directories for the object files
-$(OBJFILES): | $(OBJDIRS)
-# TODO: tests
+# object files need directories
+$(OBJFILES): | $(dir $(OBJFILES))
+
+# TODO: do tests correctly
+# TESTBINS = ./test/*.cpp -> ./bin/*.exe
+TESTBINS := $(patsubst $(TESTDIR)/%.cpp,$(BINDIR)/%.exe,$(wildcard $(TESTDIR)/*.cpp))
+.PHONY: tests run-tests
+tests run-tests: $(TESTBINS)
+run-tests: $(patsubst $(BINDIR)/%.exe,$(RESULTDIR)/%.txt,$(TESTBINS))
+
+$(RESULTDIR)/%.txt: bin/%.exe | $(RESULTDIR)/
+	./$< | tee $@
 
 
 # generic targets
@@ -69,14 +78,17 @@ ARFLAGS := rc
 
 # objects
 # TODO: AUTO GENERATE HEADER DEPS
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)/
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(OBJFLAGS) $< -o $@
 
 # libraries
 $(ENGINELIB): $(OBJECTS) | $(LIBDIR)/
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 
 # executables
+$(BINDIR)/test.exe: tests/test.cpp $(ENGINELIB) | $(BINDIR)/
+	$(CXX) $< $(EXEFLAGS) -o $@
+
 $(BINDIR)/test%.exe: tests/test%.cpp $(ENGINELIB) | $(BINDIR)/
 	$(CXX) $< $(EXEFLAGS) -o $@
 
@@ -90,11 +102,11 @@ compile_flags.txt: makefile
 	rm $@
 	$(foreach X,$(OBJFLAGS),echo $(X) >> $@;)
 
-# generated directories
+# anything in $(BUILDDIR) needs $(BUILDDIR)
+$(BUILDDIR)/%: | $(BUILDDIR)
+# generate directories
 %/:
 	mkdir -p $@
 
 clean:
-	-rm -r $(BUILDDIR)
-	-rm -r $(LIBDIR)
-	-rm -r $(BINDIR)
+	-$(foreach dir,$(GENERATED_DIRS),rm -r $(dir) ; )
