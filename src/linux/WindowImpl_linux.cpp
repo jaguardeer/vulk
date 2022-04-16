@@ -35,6 +35,18 @@ void WindowImpl::initWindow() {
 	/* map the window on the screen */
 	xcb_map_window (c, windowID);
 
+	// set window title
+	// TODO: don't have to set the title
+	constexpr const char title[] = "test-title";
+	xcb_change_property(c,     // connection
+		XCB_PROP_MODE_REPLACE, // mode
+		windowID,              // window Id
+		XCB_ATOM_WM_NAME,      // property
+		XCB_ATOM_STRING,       // type
+		8,                     // format
+		sizeof(title) - 1,     // # elements
+		title);                // data
+
 	xcb_flush (c);
 
 	this->_surfaceInfo.connection = c;
