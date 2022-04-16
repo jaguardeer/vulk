@@ -13,7 +13,7 @@ GENERATED_DIRS := $(BINDIR) $(LIBDIR) $(BUILDDIR) $(RESULTDIR)
 # os specific variables
 # win32
 ifeq ($(OS),Windows_NT)
-OSLIBS      := -luser32 -llibel
+OSLIBS      := -luser32 -llibel -lvulkan-1 -L$(VULKAN_SDK)/lib
 ENGINELIB   := $(LIBDIR)/libel.lib
 SRC_EXCLUDE := linux
 SHELL       := pwsh.exe
@@ -21,7 +21,7 @@ SHELL       := pwsh.exe
 # linux
 # TODO: don't assume linux if not win32
 else
-OSLIBS      := -lxcb -lel
+OSLIBS      := -lxcb -lel -lvulkan -L$(VULKAN_SDK)/lib
 ENGINELIB   := $(LIBDIR)/libel.a
 SRC_EXCLUDE := win32
 endif
@@ -58,7 +58,7 @@ $(RESULTDIR)/%.txt: bin/%.exe | $(RESULTDIR)/
 CXX := clang++
 # CXX INCLUDES
 INCFLAGS := -isystem $(VULKAN_SDK)/include -I$(INCDIR)
-LIBFLAGS := $(OSLIBS) -L$(LIBDIR) -lvulkan -L$(VULKAN_SDK)/lib
+LIBFLAGS := $(OSLIBS) -L$(LIBDIR)
 # CXX GENERIC FLAGS
 CXXFLAGS := -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic -Wno-padded
 CXXFLAGS += -std=c++20
