@@ -1,22 +1,41 @@
+# project directories
+# source directories
+SRCDIR    := ./src
+INCDIR    := ./include
+# generated directories
+BINDIR    := ./bin
+LIBDIR    := ./lib
+BUILDDIR  := ./build
 
 # os specific variables
+# win32
 ifeq ($(OS),Windows_NT)
-OSLIBS := -luser32 -llibel
-ENGINELIB = $(LIBDIR)/libel.lib
-SHELL := pwsh.exe
+OSLIBS      := -luser32 -llibel
+ENGINELIB   := $(LIBDIR)/libel.lib
+SRC_EXCLUDE := linux
+SHELL       := pwsh.exe
 .SHELLFLAGS := -NoProfile -Command
-else # TODO: probably shouldn't assume it's Linux if not Windows
-OSLIBS := -lxcb -lel
-ENGINELIB = $(LIBDIR)/libel.a
+# linux
+# TODO: don't assume linux if not win32
+else
+OSLIBS      := -lxcb -lel
+ENGINELIB   := $(LIBDIR)/libel.a
+SRC_EXCLUDE := win32
 endif
 
-# source directories
-SRCDIR := ./src
-INCDIR := ./include
-# generated directories
-BINDIR := ./bin
-LIBDIR := ./lib
-BUILDDIR := ./build
+# adapted from stackoverflow.com/questions/4036191/sources-from-subdirectories-in-makefile
+# returns list of all files (recursively) in ./$1 that match $2 and aren't named $3
+recurse_exclude = $(wildcard $1$2) $(foreach d,$(filter-out $1$3,$(wildcard $1*)),$(call recurse_exclude,$d/,$2,$3))
+
+# all **/*.cpp files in $(SRCDIR) that aren't named $(SRC_EXCLUDE)
+CPPFILES := $(call recurse_exclude,$(SRCDIR)/,*.cpp,$(SRC_EXCLUDE))
+OBJFILES := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(CPPFILES))
+OBJFILES := $(OBJFILES:.cpp=.o)
+
+test:
+	@echo CPPFILES = $(CPPFILES)
+	@echo OBJFILES = $(OBJFILES)
+
 
 # CXX
 CXX := clang++
@@ -36,25 +55,28 @@ AR := llvm-ar
 ARFLAGS := rc
 
 # special targets
+.SUFFIXES:
 .SECONDARY:
 .PHONY: clean
 
 # specific targets
 # TODO: AUTO GENERATE OBJECT DEPS (may depend on OS)
-$(ENGINELIB): $(BUILDDIR)/Window.o $(BUILDDIR)/WindowImpl_win32.o
+$(ENGINELIB): $(BUILDDIR)/Window.o $(BUILDDIR)/linux/WindowImpl.o
 
 # objects
 # TODO: AUTO GENERATE HEADER DEPS
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)/
 	$(CXX) $(OBJFLAGS) $< -o $@
 
+$(OBJECTS): $(OBJDIRS)
+
 # libraries
-$(ENGINELIB): | $(LIBDIR)
+$(ENGINELIB): $(OBJECTS) | $(LIBDIR)/
 	$(AR) $(ARFLAGS) $@ $^
 
 # executables
-$(BINDIR)/test%.exe: tests/test%.cpp $(ENGINELIB) | $(BINDIR)
-		$(CXX) $< $(EXEFLAGS) -o $@
+$(BINDIR)/test%.exe: tests/test%.cpp $(ENGINELIB) | $(BINDIR)/
+	$(CXX) $< $(EXEFLAGS) -o $@
 
 
 # compile_flags.txt is used by clangd
@@ -64,11 +86,11 @@ compile_flags.txt: makefile
 	rm $@
 	$(foreach X,$(OBJFLAGS),echo $(X) >> $@;)
 
-
 # generated directories
-$(BUILDDIR) $(LIBDIR) $(BINDIR):
-	mkdir $@
+%/:
+	mkdir -p $@
 
 clean:
 	-rm -r $(BUILDDIR)
 	-rm -r $(LIBDIR)
+	-rm -r $(BINDIR)
