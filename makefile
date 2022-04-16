@@ -58,7 +58,7 @@ $(RESULTDIR)/%.txt: bin/%.exe | $(RESULTDIR)/
 CXX := clang++
 # CXX INCLUDES
 INCFLAGS := -isystem $(VULKAN_SDK)/include -I$(INCDIR)
-LIBFLAGS := $(OSLIBS) -L$(LIBDIR)
+LIBFLAGS := $(OSLIBS) -L$(LIBDIR) -lvulkan -L$(VULKAN_SDK)/lib
 # CXX GENERIC FLAGS
 CXXFLAGS := -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic -Wno-padded
 CXXFLAGS += -std=c++20
