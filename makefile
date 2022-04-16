@@ -23,17 +23,26 @@ ENGINELIB   := $(LIBDIR)/libel.a
 SRC_EXCLUDE := win32
 endif
 
+
+# parse ./src
 # adapted from stackoverflow.com/questions/4036191/sources-from-subdirectories-in-makefile
 # returns list of all files (recursively) in ./$1 that match $2 and aren't named $3
 recurse_exclude = $(wildcard $1$2) $(foreach d,$(filter-out $1$3,$(wildcard $1*)),$(call recurse_exclude,$d/,$2,$3))
-
-# all **/*.cpp files in $(SRCDIR) that aren't named $(SRC_EXCLUDE)
+# CPPFILES = all **/*.cpp files in $(SRCDIR) that aren't named $(SRC_EXCLUDE)
 CPPFILES := $(call recurse_exclude,$(SRCDIR)/,*.cpp,$(SRC_EXCLUDE))
+# OBJFILES = same as CPPFILES, but is .o and in ./build/*
 OBJFILES := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(CPPFILES))
 OBJFILES := $(OBJFILES:.cpp=.o)
+OBJDIRS  := $(dir $(OBJFILES))
+
 
 # specific targets
+# main library (libel.lib)
 $(ENGINELIB): $(OBJFILES)
+# build directories for the object files
+$(OBJFILES): | $(OBJDIRS)
+# TODO: tests
+
 
 # generic targets
 # CXX
@@ -63,9 +72,6 @@ ARFLAGS := rc
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)/
 	$(CXX) $(OBJFLAGS) $< -o $@
 
-# TODO: MAKE THIS WORK
-$(BUILDDIR)/%.o: $(dir $@)
-
 # libraries
 $(ENGINELIB): $(OBJECTS) | $(LIBDIR)/
 	$(AR) $(ARFLAGS) $@ $^
@@ -75,6 +81,8 @@ $(BINDIR)/test%.exe: tests/test%.cpp $(ENGINELIB) | $(BINDIR)/
 	$(CXX) $< $(EXEFLAGS) -o $@
 
 
+# UTILITY TARGETS
+#
 # compile_flags.txt is used by clangd
 # generate compile_flags.txt with the same args used to compile .o files
 compile_flags.txt: makefile
