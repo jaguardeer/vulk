@@ -1,10 +1,13 @@
 game window class:
+	implement as RAII class
 	switch to atom instead of string?
 	clean up properly
 	research linux message queue
+	proper error detection (ESPECIALLY ON LINUX!!)
 
 vulkan:
 	draw triangle
 
 build:
 	implement better testing system - use exe return code instead of stdout
+	better compile_flags.txt? compile_flags.json?
