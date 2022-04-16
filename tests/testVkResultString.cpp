@@ -1,13 +1,13 @@
 #include <vulkan/vulkan.h>
 
-import <iostream>;
-import vulkanResultString;
-//using namespace std;
+#include <iostream>
+#include <el/VkResultString.hpp>
 
-
-bad 
+using namespace std;
+using namespace EngineLibrary;
 
 int main() {
 	std::cout << VK_SUCCESS << std::endl;
 	std::cout << GetVkResultString(VK_SUCCESS) << std::endl;
+	return 0;
 }
