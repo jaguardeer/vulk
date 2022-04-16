@@ -100,8 +100,9 @@ namespace EngineLibrary {
 				//			return "VK_ERROR_PIPELINE_COMPILE_REQUIRED_EXT";
 			case VK_RESULT_MAX_ENUM:
 				return "VK_RESULT_MAX_ENUM";
-			default:
-				return "!!! NOT A VkResult !!!";
+// clang++ can detect if all enum values are covered
+//			default:
+//				return "!!! NOT A VkResult !!!";
 		}
 	}
 }      // namespace EngineLibrary
