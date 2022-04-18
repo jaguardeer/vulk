@@ -11,8 +11,9 @@ namespace engineLibrary {
 		// bool conversion
 		// operator bool() const { return !error; }; // TODO: allow implicit conversion from error?
 		// big 6                                     // or pass error value in template or something
-		// construct, destruct
-		Result()  = default;
+		// constructor, destructor
+		// Result()  = default;
+		Result(T value, E error) : value{value}, error{error} {}
 		~Result() = default;
 		// copy
 		Result(const Result &) = default;
