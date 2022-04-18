@@ -13,7 +13,7 @@ namespace engineLibrary {
 		// big 6                                     // or pass error value in template or something
 		// constructor, destructor
 		// Result()  = default;
-		Result(T value, E error) : value{value}, error{error} {}
+		Result(T value_, E error_) : value{value_}, error{error_} {}
 		~Result() = default;
 		// copy
 		Result(const Result &) = default;

@@ -1,15 +1,22 @@
 #include <vulkan/vulkan.h>
 #include <iostream>
+#include <vector>
+
+#include <el/Instance.hpp>
 
 using std::cout;
 using std::endl;
+using std::vector;
 
-auto PrintVulkanResult(VkResult result, const char* extra_message = nullptr) {
+using namespace engineLibrary;
+using namespace engineLibrary::vulkan;
+
+static auto PrintVulkanResult(VkResult result, const char* extra_message = nullptr) {
 	if(extra_message != nullptr) cout << extra_message << endl;
 	cout << "(" << result << "): " << endl;
 }
 
-void CreateVulkanInstance() {
+static void CreateVulkanInstance() {
 	static constexpr VkApplicationInfo app_info = {
 		.sType               = VK_STRUCTURE_TYPE_APPLICATION_INFO,
 		.pApplicationName    = "test app",
@@ -30,14 +37,14 @@ void CreateVulkanInstance() {
 	if(result != VK_SUCCESS) PrintVulkanResult(result, "failed to create Vulkan instance");
 }
 
-auto PrintLayerExtensions(const char* layerName = nullptr) {
+static auto PrintLayerExtensions(const char* layerName = nullptr) {
 	uint32_t numExtensions;
 	VkResult err;
 	err = vkEnumerateInstanceExtensionProperties(layerName, &numExtensions, nullptr);
 	if(err != VK_SUCCESS) PrintVulkanResult(err, "failed to query # extensions");
-	VkExtensionProperties extensions[numExtensions];
-	err = vkEnumerateInstanceExtensionProperties(layerName, &numExtensions, extensions);
-	for(const auto extension : extensions) {
+	vector<VkExtensionProperties> extensions(numExtensions);
+	err = vkEnumerateInstanceExtensionProperties(layerName, &numExtensions, extensions.data());
+	for(const auto &extension : extensions) {
 		cout << extension.extensionName << endl;
 	}
 }
