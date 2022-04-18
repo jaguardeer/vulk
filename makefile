@@ -10,6 +10,10 @@ LIBDIR    := ./lib
 BUILDDIR  := ./build
 RESULTDIR := ./results
 GENERATED_DIRS := $(BINDIR) $(LIBDIR) $(BUILDDIR) $(RESULTDIR)
+# $(VULKAN_SDK) must be set by environment (vulkan installer sets it)
+ifndef VULKAN_SDK
+$(error missing environment variable VULKAN_SDK)
+endif
 
 # os specific variables
 # win32
