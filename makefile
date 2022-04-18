@@ -67,7 +67,7 @@ LIBFLAGS := $(OSLIBS) -L$(LIBDIR)
 # CXX GENERIC FLAGS
 CXXFLAGS := -Weverything -Wno-c++98-compat -Wno-pre-c++20-compat-pedantic -Wno-padded
 CXXFLAGS += -std=c++20
-CXXFLAGS += -g
+CXXFLAGS += -g -O3
 # CXX FILETYPE FLAGS
 OBJFLAGS := -c $(CXXFLAGS) $(INCFLAGS)
 EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(INCFLAGS) $(LIBFLAGS)
