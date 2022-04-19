@@ -4,27 +4,29 @@
 #include <vulkan/vulkan.h>
 #include <el/util.hpp>
 
+
 namespace engineLibrary::vulkan{
 
 	class Instance {
 		public:
 
-		static Result<Instance, VkResult> Create(VkInstanceCreateInfo createInfo);
+		// TODO: uncomment this for science
+		// static std::tuple<Instance, VkResult> CreateT(const VkInstanceCreateInfo &createInfo);
+		static Result<Instance, VkResult> Create(const VkInstanceCreateInfo &createInfo);
 
-		// move assign
-		Instance& operator= (Instance&& other) { this->id = other.id; other.id = VK_NULL_HANDLE; return *this; }
-		// move construct
-		Instance (Instance &&other);
-
+		// struct
+		Instance();
 		~Instance();
-
+		// move
+		Instance& operator= (Instance&& other);
+		Instance (Instance &&other);
 		// non copyable
-		explicit Instance(const Instance&) = default;//delete;
-		Instance& operator= (const Instance&) = default;//delete;
+		Instance(const Instance&) = delete;
+		Instance& operator= (const Instance&) = delete;
 
 		private:
-		explicit Instance(const VkInstance id_) : id{id_} {}
 
+		explicit Instance(const VkInstance id_);
 		VkInstance id;
 	};
 

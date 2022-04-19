@@ -38,8 +38,7 @@ static Result<Instance, VkResult> CreateVulkanInstance() {
 		.pApplicationInfo = &app_info,
 	};
 
-	const auto result = Instance::Create(instance_info);
-	return result;
+	return Instance::Create(instance_info);
 }
 
 
@@ -56,6 +55,7 @@ int main() {
 		const auto [instance, error] = CreateVulkanInstance();
 		if(error != VK_SUCCESS) {
 			PrintVulkanResult(error, "failed to create vulkan instance");
+			return 1;
 		}
 
 		msg("main loop...");

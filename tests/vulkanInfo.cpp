@@ -16,7 +16,7 @@ static auto PrintVulkanResult(VkResult result, const char* extra_message = nullp
 	cout << "(" << result << "): " << endl;
 }
 
-static void CreateVulkanInstance() {
+static auto CreateVulkanInstance() {
 	static constexpr VkApplicationInfo app_info = {
 		.sType               = VK_STRUCTURE_TYPE_APPLICATION_INFO,
 		.pApplicationName    = "test app",
@@ -32,9 +32,9 @@ static void CreateVulkanInstance() {
 		.pApplicationInfo = &app_info,
 	};
 
-	VkInstance vk_instance;
-	VkResult result = vkCreateInstance(&instance_info, nullptr, &vk_instance);
-	if(result != VK_SUCCESS) PrintVulkanResult(result, "failed to create Vulkan instance");
+	// auto result = Instance::Create(instance_info);
+	// if(result.error != VK_SUCCESS) PrintVulkanResult(result.error, "failed to create instance");
+	// return std::move(result);
 }
 
 static auto PrintLayerExtensions(const char* layerName = nullptr) {
