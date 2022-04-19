@@ -1,4 +1,9 @@
+# makefile settings
+.SUFFIXES:
+.SECONDARY:
+.SECONDARYEXPANSION:
 .DEFAULT_GOAL := tests
+
 # project directories
 # source directories
 SRCDIR    := ./src
@@ -9,7 +14,8 @@ BINDIR    := ./bin
 LIBDIR    := ./lib
 BUILDDIR  := ./build
 RESULTDIR := ./results
-GENERATED_DIRS := $(BINDIR) $(LIBDIR) $(BUILDDIR) $(RESULTDIR)
+DEPDIR    := $(BUILDDIR)/dep
+GENERATED_DIRS := $(BINDIR) $(LIBDIR) $(BUILDDIR) $(RESULTDIR) $(DEPDIR)
 # $(VULKAN_SDK) must be set by environment (vulkan installer sets it)
 ifndef VULKAN_SDK
 $(error missing environment variable VULKAN_SDK)
@@ -30,6 +36,10 @@ OSLIBS      := -lxcb -lel -lvulkan -L$(VULKAN_SDK)/lib
 ENGINELIB   := $(LIBDIR)/libel.a
 SRC_EXCLUDE := win32
 endif
+
+# TODO: make this recurse?
+DEPFILES := $(wildcard $(DEPDIR)/*)
+-include $(DEPFILES)
 
 
 # parse ./src
@@ -58,10 +68,6 @@ $(RESULTDIR)/%.txt: bin/%.exe | $(RESULTDIR)/
 	./$< | tee $@
 
 
-# special targets
-.SUFFIXES:
-.SECONDARY:
-
 # generic targets
 # CXX
 CXX := clang++
@@ -76,30 +82,25 @@ CXXFLAGS += -g -O3
 OBJFLAGS := -c $(CXXFLAGS) $(INCFLAGS)
 EXEFLAGS := $(CXXFLAGS) $(OSLIBS) $(INCFLAGS) $(LIBFLAGS)
 
+depFunc = -MMD -MF $(DEPDIR)/$(notdir $1).d
+
 # AR
 AR := llvm-ar
 ARFLAGS := rc
 
 # objects
-# TODO: AUTO GENERATE HEADER DEPS
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CXX) $(OBJFLAGS) $< -o $@
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(DEPDIR)/
+	$(CXX) $(OBJFLAGS) $(call depFunc,$@) -o $@
 
 # libraries
 $(ENGINELIB): $(OBJECTS) | $(LIBDIR)/
 	$(AR) $(ARFLAGS) $@ $?
 
-# executables
-$(BINDIR)/test.exe: $(TESTDIR)/test.cpp $(ENGINELIB) | $(BINDIR)/
-	$(CXX) $< $(EXEFLAGS) -o $@
-
-$(BINDIR)/test%.exe: $(TESTDIR)/test%.cpp $(ENGINELIB) | $(BINDIR)/
-	$(CXX) $< $(EXEFLAGS) -o $@
-
-# TODO: move %.exe target sources into a different dir
-# TODO: move %.exe target sources into a different dir
-$(BINDIR)/%.exe: $(TESTDIR)/%.cpp $(ENGINELIB) | $(BINDIR)/
-	$(CXX) $< $(EXEFLAGS) -o $@
+# TODO: move %.exe target sources into a different dir?
+# TODO: library tests shouldn't depend on the whole library,
+#       changing one source file will rerun every test
+$(BINDIR)/%.exe: $(TESTDIR)/%.cpp $(ENGINELIB) | $(BINDIR)/ $(DEPDIR)/
+	$(CXX) $< $(EXEFLAGS) $(call depFunc,$@) -o $@
 
 
 # UTILITY TARGETS
