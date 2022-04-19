@@ -90,7 +90,7 @@ ARFLAGS := rc
 
 # objects
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(DEPDIR)/
-	$(CXX) $(OBJFLAGS) $(call depFunc,$@) -o $@
+	$(CXX) $(OBJFLAGS) $(call depFunc,$@) $< -o $@
 
 # libraries
 $(ENGINELIB): $(OBJECTS) | $(LIBDIR)/
