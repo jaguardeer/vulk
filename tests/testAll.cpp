@@ -2,7 +2,10 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+<<<<<<< HEAD
 #include <array>
+=======
+>>>>>>> 597cb070db415ebb161d158dcd52676c24ab7f3c
 
 // engineLibrary headers
 #include <el/Window.hpp>
