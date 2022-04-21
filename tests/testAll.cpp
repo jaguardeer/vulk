@@ -1,6 +1,7 @@
 #include <vulkan/vulkan.h>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 // engineLibrary headers
 #include <el/Window.hpp>
@@ -20,6 +21,19 @@ using namespace engineLibrary::vulkan;
 static auto PrintVulkanResult(VkResult result, const char* extra_message = nullptr) {
 	if(extra_message != nullptr) cout << extra_message << endl;
 	cout << "(" << result << "): " << GetVkResultString(result) << endl;
+}
+
+// returns list of available layers
+static auto GetVulkanLayers () {
+	uint32_t numLayers;
+	vkEnumerateInstanceLayerProperties(&numLayers, nullptr);
+	std::vector<VkLayerProperties> layers(numLayers);
+	vkEnumerateInstanceLayerProperties(&numLayers, layers.data());
+	return layers;
+}
+
+static auto PrintVulkanLayers() {
+	for(auto&& layer : GetVulkanLayers()) cout << layer.layerName << endl;
 }
 
 static Result<Instance, VkResult> CreateVulkanInstance() {
@@ -47,6 +61,8 @@ int main() {
 	{
 		msg("running app...");
 
+		PrintVulkanLayers();
+
 		msg("making main window...");
 		Window gameWindow;
 		gameWindow.initWindow();
@@ -57,7 +73,6 @@ int main() {
 			PrintVulkanResult(error, "failed to create vulkan instance");
 			return 1;
 		}
-
 		msg("main loop...");
 		while(gameWindow.isOpen()) {
 			gameWindow.processMessages();
