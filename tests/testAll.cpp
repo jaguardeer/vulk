@@ -2,6 +2,7 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <array>
 
 // engineLibrary headers
 #include <el/Window.hpp>
@@ -46,10 +47,14 @@ static Result<Instance, VkResult> CreateVulkanInstance() {
 		.apiVersion          = VK_API_VERSION_1_0,
 	};
 
+	static constexpr std::array layerNames = {"VK_LAYER_KHRONOS_validation"};
+
 	// TODO: layers & extensions
 	static constexpr VkInstanceCreateInfo instance_info = {
 		.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 		.pApplicationInfo = &app_info,
+		.enabledLayerCount = layerNames.size(),
+		.ppEnabledLayerNames = layerNames.data(),
 	};
 
 	return Instance::Create(instance_info);

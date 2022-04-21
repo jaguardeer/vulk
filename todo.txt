@@ -10,4 +10,4 @@ vulkan:
 
 build:
 	implement better testing system - use exe return code instead of stdout
-	better compile_flags.txt? compile_flags.json?
+	better compile_flags.txt? compile_flags.json? -> -MJ flag can generate compile_flags.json
