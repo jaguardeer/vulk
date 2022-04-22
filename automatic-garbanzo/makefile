@@ -58,7 +58,7 @@ test: test.cxx
 
 # shaders
 %.spv: shader.%
-	/cygdrive/c/VulkanSDK/1.0.54.0/Bin32/glslangValidator.exe -V $<
+	$(VULKAN_SDK)/bin/glslangValidator -V $<
 
 
 
