@@ -1,7 +1,9 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 extern "C" {
-#include <windows.h>
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
 }
 
 namespace Input_Win32 {

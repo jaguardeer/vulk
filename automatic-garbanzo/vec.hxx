@@ -3,7 +3,7 @@
 #include <cmath>
 //TODO: namespace this
 //TODO - same members by different names? do it anyway and suppress warnings?
-static constexpr auto pi = acos(-1);
+static constexpr auto pi = 3.14159265358979324;
 
 struct vec2
 {

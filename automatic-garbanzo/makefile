@@ -1,6 +1,12 @@
+# set shell for windows
+ifeq ($(OS),Windows_NT)
+SHELL       := pwsh.exe
+.SHELLFLAGS := -NoProfile -Command
+endif
+
 # flags
 .DEFAULT_GOAL := debug
-WARNINGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef -Wno-unused -Wuseless-cast -Wzero-as-null-pointer-constant -Wduplicated-cond
+WARNINGS = #-pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef -Wno-unused -Wuseless-cast -Wzero-as-null-pointer-constant -Wduplicated-cond
 #-Wmissing-declarations
 
 OPTIMIZE_FLAGS = -O3 -Ofast
@@ -8,11 +14,10 @@ DEBUG_FLAGS = -g
 
 
 # compiling
-CXX = g++
-CXX_WIN32 = /cygdrive/c/MinGW/bin/g++
+CXX = clang++
 CXXFLAGS = -std=c++17
 
-COMPILEXX = $(CXX) $(DEP_FLAGS) $(CXXFLAGS)
+COMPILEXX = $(CXX) $(DEP_FLAGS) $(CXXFLAGS) -isystem $(VULKAN_SDK)/include
 POSTCOMPILE = @mv -f $(DEP_DIR)/$*.Td $(DEP_DIR)/$*.d && touch $@
 
 OUTPUT_FLAGS = -o $@
@@ -48,7 +53,7 @@ APP_FILES := a.exe vert.spv frag.spv
 debug: CXXFLAGS += $(WARNINGS) $(DEBUG_FLAGS)
 debug: $(APP_FILES)
 
-a.exe: LIB_FLAGS = -lvulkan-1
+a.exe: LIB_FLAGS = -L$(VULKAN_SDK)/lib -lvulkan-1 -luser32
 a.exe: $(OBJECT_FILES)
 	$(COMPILEXX) $(OBJECT_FILES) -o a.exe $(LIB_FLAGS)
 

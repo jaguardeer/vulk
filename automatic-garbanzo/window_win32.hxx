@@ -1,9 +1,11 @@
 #ifndef WINDOW_WIN32_HXX
 #define WINDOW_WIN32_HXX
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 
 //TODO: rename this to Window_WIN or so
 extern "C" {
-#include <windows.h>
+#include <Windows.h>
 }
 #include <cstdint>
 #include "result.hxx"

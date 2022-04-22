@@ -1,4 +1,6 @@
 #define VK_USE_PLATFORM_WIN32_KHR
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include "graphics_engine.hxx"
 //#include "vulkan_setup.hxx"
 #include "VkResult_to_CString.hxx"
@@ -38,7 +40,7 @@ constexpr const char* needed_instance_extensions[] =
 
 constexpr const char* needed_layers[] =
 {
-	"VK_LAYER_LUNARG_standard_validation"	//optional
+	"VK_LAYER_KHRONOS_validation"	//optional. older SDKS used VK_LAYER_LUNARG_standard_validation
 };
 
 
@@ -1900,7 +1902,7 @@ void Graphics_Engine::InsertCmd_Begin_Frame
 	rp_begin_info.renderPass = this->render_pass;
 	rp_begin_info.framebuffer = target_framebuffer;
 	rp_begin_info.renderArea.extent = Choose_Swapchain_Extent();//TODO
-	constexpr auto clear_values 	= Get_Clear_Values();
+	const auto clear_values 	= Get_Clear_Values();
 	rp_begin_info.clearValueCount 	= clear_values.length();
 	rp_begin_info.pClearValues 		= clear_values.data();
 	vkCmdBeginRenderPass(//TODO: use VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS?

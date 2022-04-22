@@ -1,8 +1,10 @@
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include "graphics_engine.hxx"
 #include <utility>
 #include <iostream>
 #include <cstring>
-#include <windows.h>
+#include <Windows.h>
 #include "VkResult_to_CString.hxx"
 #include "wip/bmp.hxx"
 #include "wip/obj_loader.hxx"
@@ -50,7 +52,7 @@ void OnMouseMoveRaw (LONG x_delta, LONG y_delta)
 {
 	//Rotate_With_Mouse(*camera_matrix_ptr, x_delta, y_delta);
 	constexpr float mouse_sensitivity = 0.05;
-	global.camera_orientation += vec2{x_delta, y_delta} * mouse_sensitivity;
+	global.camera_orientation += vec2{static_cast<float>(x_delta), static_cast<float>(y_delta)} * mouse_sensitivity;
 }
 
 constexpr float to_deg(float rad) { return rad*180./3.14; }

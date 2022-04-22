@@ -131,10 +131,12 @@ class OBJ_File
 			const char* id;
 			Line_Parsing_Function handleLine;
 		}const Line_Handlers[] = {
-			{"v",parseVertexPosition},
-			{"vt",parseTextureCoord},
-			{"f",parseFace}
+			{"v",&OBJ_File::parseVertexPosition},
+			{"vt",&OBJ_File::parseTextureCoord},
+			{"f",&OBJ_File::parseFace}
 		};
+
+
 
 		const Text_Segment line = {start,end};
 		const Text_Segment arg = line.word(0);
