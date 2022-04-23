@@ -113,7 +113,8 @@ compile_flags.txt: makefile
 	$(foreach X,$(OBJFLAGS),echo $(X) >> $@;)
 
 # anything in $(BUILDDIR) needs $(BUILDDIR)
-$(BUILDDIR)/%: | $(BUILDDIR)
+$(BUILDDIR)/%: | $(BUILDDIR)/
+$(DEPDIR)/: | $(BUILDDIR)/
 # generate directories
 %/:
 	mkdir -p $@
