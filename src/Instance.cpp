@@ -3,6 +3,10 @@
 using namespace engineLibrary;
 using namespace engineLibrary::vulkan;
 
+Instance::operator VkInstance() const {
+	return id;
+}
+
 Instance::Instance(const VkInstance id_) : id{id_} {
 }
 
