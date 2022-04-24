@@ -10,11 +10,11 @@
 
 namespace engineLibrary{
 	class Window {
-		// todo: return result instead of void
+		// TODO: return result instead of void
 		public:
 			void initWindow();
 			bool isOpen() const;
-			void processMessages(); // todo: move this elsewhere?
+			void processMessages(); // TODO: move this elsewhere?
 			VulkanSurfaceInfo getSurfaceInfo(); // returns info needed to build the appropriate Vk**SurfaceCreateInfo struct
 		private:
 			engineLibrary::WindowImpl _impl;
