@@ -24,7 +24,7 @@ endif
 # os specific variables
 # win32
 ifeq ($(OS),Windows_NT)
-OSLIBS      := -luser32 -llibel -lvulkan-1 -L$(VULKAN_SDK)/lib
+OSLIBS      := -lOneCore -llibel -lvulkan-1 -L$(VULKAN_SDK)/lib
 ENGINELIB   := $(LIBDIR)/libel.lib
 SRC_EXCLUDE := linux
 SHELL       := pwsh.exe
