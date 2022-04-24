@@ -10,15 +10,16 @@ namespace engineLibrary {
 		// vars	TODO: make private?
 		T value;
 		E error;
+
+		// struct
 		// TODO: fully understand what std::forward does here
-		Result(T value_, E error_) : value{std::forward<T>(value_)}, error{error_} {}
+		explicit Result(T value_, E error_) : value{std::forward<T>(value_)}, error{error_} {}
 		~Result() = default;
 		// copy
 		Result(const Result &) = default;
 		Result& operator= (const Result &) = default;
-		// move construct
+		// move
 		Result(Result&& other) = default;
-		// move assign
 		Result& operator= (Result&& other) = default;
 	};
 }      // namespace engineLibrary

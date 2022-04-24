@@ -24,7 +24,7 @@ Instance::Instance(Instance&& other) {
 Result<Instance, VkResult> Instance::Create(const VkInstanceCreateInfo &createInfo) {
 	VkInstance id = VK_NULL_HANDLE;
 	auto error = vkCreateInstance(&createInfo, nullptr, &id);
-	return {Instance{id}, error};
+	return Result {Instance{id}, error};
 	// TODO: can it work without std::move? probably not, std::tuple can't do it
 	//Instance instance{VK_NULL_HANDLE};
 	//auto error = vkCreateInstance(&createInfo, nullptr, &instance.id);

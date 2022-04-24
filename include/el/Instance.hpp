@@ -10,12 +10,9 @@ namespace engineLibrary::vulkan{
 	class Instance {
 		public:
 
-		// TODO: uncomment this for science
-		// static std::tuple<Instance, VkResult> CreateT(const VkInstanceCreateInfo &createInfo);
 		static Result<Instance, VkResult> Create(const VkInstanceCreateInfo &createInfo);
 
-		// struct
-		Instance();
+		Instance() = delete;
 		~Instance();
 		// move
 		Instance& operator= (Instance&& other);
