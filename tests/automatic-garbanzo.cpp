@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <array>
 // engineLibrary headers
 #include <el/Window.hpp>
 #include <el/VkResultString.hpp>
