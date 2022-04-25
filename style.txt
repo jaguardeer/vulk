@@ -1,0 +1,7 @@
+*:
+	return results via el::Result
+
+Vulkan Wrapper:
+	Vk* -> vk::*
+	vk*<Type>* -> vk::<Type>::**
+		ex: vkGetPhysicalDeviceProperties() -> vk::PhysicalDevice::getProperties()
