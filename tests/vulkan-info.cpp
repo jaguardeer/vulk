@@ -2,6 +2,9 @@
 #include <iostream>
 #include <vector>
 
+#include "test-common.hpp"
+#include <el/Instance.hpp>
+
 using std::cout;
 using std::endl;
 using std::vector;
@@ -37,9 +40,12 @@ static auto PrintVulkanLayers() {
 }
 
 int main() {
-	cout << "available extensions:" << endl;
+	msg("available extensions:");
 	PrintLayerExtensions();
-	cout << endl << "available layers:" << endl;
+	msg("\navailable layers:");
 	PrintVulkanLayers();
+
+	msg("\ncreating instance...");
+	auto instance = CreateInstance();
 	return 0;
 }

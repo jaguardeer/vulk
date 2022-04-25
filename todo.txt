@@ -1,3 +1,7 @@
+vulkan-info:
+	replicate (some) of the features of VulkanSDK's vulkaninfo
+	wrap features in RAII C++ objects
+
 game window class:
 	implement as RAII class
 	switch to atom instead of string?
