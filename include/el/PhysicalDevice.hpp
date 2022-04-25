@@ -9,7 +9,7 @@ namespace engineLibrary::vulkan{
 	class PhysicalDevice{
 		public:
 
-		VkPhysicalDeviceProperties getPhysicalDeviceProperties();
+		VkPhysicalDeviceProperties getProperties();
 
 		private:
 		VkPhysicalDevice id;

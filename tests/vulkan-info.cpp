@@ -46,7 +46,7 @@ int main() {
 	msg("physical devices:");
 	auto [devices, error] = instance.enumeratePhysicalDevices();
 	for(auto &&device : devices) {
-		msg(device.getPhysicalDeviceProperties().deviceName);
+		msg(device.getProperties().deviceName);
 	}
 	return 0;
 }

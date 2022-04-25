@@ -2,7 +2,7 @@
 
 using namespace engineLibrary::vulkan;
 
-VkPhysicalDeviceProperties PhysicalDevice::getPhysicalDeviceProperties() {
+VkPhysicalDeviceProperties PhysicalDevice::getProperties() {
 	VkPhysicalDeviceProperties properties;
 	vkGetPhysicalDeviceProperties(id, &properties);
 	return properties;
