@@ -11,6 +11,11 @@ namespace engineLibrary::vulkan{
 		VkPhysicalDeviceProperties getProperties() const;
 		list<VkQueueFamilyProperties> getQueueFamilyProperties() const;
 
+		explicit operator VkPhysicalDevice();
+
+		PhysicalDevice();
+		explicit PhysicalDevice(VkPhysicalDevice id_);
+
 		private:
 		VkPhysicalDevice id;
 	};
