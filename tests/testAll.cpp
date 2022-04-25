@@ -22,24 +22,13 @@ using std::endl;
 using namespace engineLibrary;
 using namespace engineLibrary::vulkan;
 
-// returns list of available layers
-static auto GetVulkanLayers () {
-	uint32_t numLayers;
-	vkEnumerateInstanceLayerProperties(&numLayers, nullptr);
-	std::vector<VkLayerProperties> layers(numLayers);
-	vkEnumerateInstanceLayerProperties(&numLayers, layers.data());
-	return layers;
-}
+static auto isDeviceSuitable() {
 
-static auto PrintVulkanLayers() {
-	for(auto&& layer : GetVulkanLayers()) cout << layer.layerName << endl;
 }
 
 int main() {
 	{
 		msg("running app...");
-
-		PrintVulkanLayers();
 
 		msg("making main window...");
 		Window gameWindow;
@@ -47,6 +36,10 @@ int main() {
 
 		msg("creating vulkan instance...");
 		const auto instance = CreateInstance();
+
+
+
+		return 0;
 		msg("main loop...");
 		while(gameWindow.isOpen()) {
 			gameWindow.processMessages();
