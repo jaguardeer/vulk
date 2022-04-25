@@ -22,7 +22,7 @@ namespace engineLibrary::vulkan{
 		// public creation method (constructor is private)
 		static Result<Instance> Create(const VkInstanceCreateInfo &createInfo);
 		// wrapped instance functions from Vulkan API
-		Result<list<PhysicalDevice>> enumeratePhysicalDevices();
+		Result<list<PhysicalDevice>> enumeratePhysicalDevices() const;
 		//enumeratePhysicalDeviceGroups();
 		//getInstanceProcAddr();
 

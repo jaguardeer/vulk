@@ -6,7 +6,7 @@
 using namespace engineLibrary;
 using namespace engineLibrary::vulkan;
 
-Instance::Result<list<PhysicalDevice>> Instance::enumeratePhysicalDevices() {
+Instance::Result<list<PhysicalDevice>> Instance::enumeratePhysicalDevices() const {
 	uint32_t numDevices;
 	{	// return early if querying # devices fails
 		const auto error = vkEnumeratePhysicalDevices(id, &numDevices, nullptr);
