@@ -9,6 +9,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 
+// returns list of available extensions
 static auto PrintLayerExtensions(const char* layerName = nullptr) {
 	uint32_t numExtensions;
 	VkResult err;
@@ -42,5 +43,10 @@ int main() {
 
 	msg("\ncreating instance...");
 	auto instance = CreateInstance();
+	msg("physical devices:");
+	auto [devices, error] = instance.enumeratePhysicalDevices();
+	for(auto &&device : devices) {
+		msg(device.getPhysicalDeviceProperties().deviceName);
+	}
 	return 0;
 }
