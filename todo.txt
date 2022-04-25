@@ -17,6 +17,10 @@ vulkan:
 	namespace vulkan -> vk?
 	move vulkan into its own subfolder?
 
+logger:
+	implement logger class
+	faster than stdout
+
 build:
 	implement better testing system - use exe return code instead of stdout
 	better compile_flags.txt? compile_flags.json? -> -MJ flag can generate compile_flags.json
