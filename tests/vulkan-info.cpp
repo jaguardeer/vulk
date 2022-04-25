@@ -9,11 +9,6 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-static auto PrintVulkanResult(VkResult result, const char* extra_message = nullptr) {
-	if(extra_message != nullptr) cout << extra_message << endl;
-	cout << "(" << result << "): " << endl;
-}
-
 static auto PrintLayerExtensions(const char* layerName = nullptr) {
 	uint32_t numExtensions;
 	VkResult err;

@@ -22,11 +22,6 @@ using std::endl;
 using namespace engineLibrary;
 using namespace engineLibrary::vulkan;
 
-[[maybe_unused]] static auto PrintVulkanResult (VkResult result, const char* extra_message = nullptr) {
-	if(extra_message != nullptr) cout << extra_message << endl;
-	cout << "(" << result << "): " << GetVkResultString(result) << endl;
-}
-
 // returns list of available layers
 static auto GetVulkanLayers () {
 	uint32_t numLayers;
