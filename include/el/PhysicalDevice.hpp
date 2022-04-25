@@ -4,12 +4,12 @@
 #include <vulkan/vulkan.h>
 #include <el/util.hpp>
 
-
 namespace engineLibrary::vulkan{
 	class PhysicalDevice{
 		public:
 
-		VkPhysicalDeviceProperties getProperties();
+		VkPhysicalDeviceProperties getProperties() const;
+		list<VkQueueFamilyProperties> getQueueFamilyProperties() const;
 
 		private:
 		VkPhysicalDevice id;
