@@ -9,10 +9,6 @@
 
 namespace engineLibrary::vulkan{
 
-	// TODO: make this global to engineLibrary?
-	// list is currently std::vector, might change later
-	template<class T> using list = std::vector<T>;
-
 	class Instance {
 		public:
 

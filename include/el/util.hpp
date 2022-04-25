@@ -1,6 +1,7 @@
 #ifndef ENGINE_LIBRARY_UTIL
 #define ENGINE_LIBRARY_UTIL
 
+#include <vector>
 #include <utility>
 
 namespace engineLibrary {
@@ -21,5 +22,7 @@ namespace engineLibrary {
 		// move assign
 		Result& operator= (Result&& other) = default;
 	};
+
+	template<class T> using list = std::vector<T>;
 }      // namespace engineLibrary
 #endif // ENGINE_LIBRARY_UTIL
