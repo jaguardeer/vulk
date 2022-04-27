@@ -8,6 +8,8 @@ namespace engineLibrary {
 	template <class T, class E>
 	class Result {
 		public:
+		// TODO: Result.check() -> value. what would it return if error?
+		// TODO: CheckedResult? Result.orElse(callback(Result))?
 		// vars	TODO: make private?
 		T value;
 		E error;
