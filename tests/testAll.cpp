@@ -4,6 +4,7 @@
 #include <thread>
 #include <vector>
 #include <array>
+#include <algorithm>
 
 // engineLibrary headers
 #include <el/Window.hpp>
@@ -18,13 +19,17 @@ using namespace engineLibrary;
 using namespace engineLibrary::vulkan;
 
 static auto isDeviceSuitable(const PhysicalDevice device) {
+	const auto queueFamProperties = device.getQueueFamilyProperties();
+	const auto deviceHasQueueFam = [&](auto requiredFlags) {
+		return std::ranges::any_of(queueFamProperties, [=](auto properties) {
+			return requiredFlags == (requiredFlags & properties.queueFlags);
+		});
+	};
 	// device is suitable if it has a family with VK_QUEUE_GRAPHICS_BIT
-	// can check that it is capable of drawing to my window
-	const auto queueFamilies = device.getQueueFamilyProperties();
-	for(auto &&family : queueFamilies) {
-		if(family.queueFlags & VK_QUEUE_GRAPHICS_BIT) return true;
-	}
-	return false;
+	// should also check that it is capable of drawing to my window
+	const auto requiredQueueFamilies = {VK_QUEUE_GRAPHICS_BIT};
+	const auto hasAllQueueFamilies = std::ranges::all_of(requiredQueueFamilies, deviceHasQueueFam);
+	return hasAllQueueFamilies;
 }
 
 static auto choosePhysicalDevice(const list<PhysicalDevice> devices) {
@@ -75,6 +80,7 @@ int main() {
 		const auto instance = CreateInstance();
 		msg("choosing device...");
 		auto devices = instance.enumeratePhysicalDevices();
+		// devices.find_if(...);
 		choosePhysicalDevice(devices.value);
 
 
