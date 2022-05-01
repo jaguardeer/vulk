@@ -7,8 +7,14 @@ namespace {
 	using namespace engineLibrary;
 	using namespace engineLibrary::vulkan;
 
+
 	[[maybe_unused]] static auto msg (const char* c) {
 		std::cout << c << std::endl;
+	}
+
+	[[noreturn, maybe_unused]] static auto msg_fatal (const char* c, int status = 1) {
+		msg(c);
+		exit(status);
 	}
 
 	[[maybe_unused]] static auto PrintVulkanResult (VkResult result, const char* extra_message = nullptr) {
